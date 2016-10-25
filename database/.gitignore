@@ -5,3 +5,5 @@
 .DS_Store
 /build
 /captures
+/database.iml
+/gradle.properties
