@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.google.android.gms.ads.AdListener;
@@ -31,8 +32,9 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 // [END_EXCLUDE]
 
-
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private AdView mAdView;
     // [START_EXCLUDE]
@@ -69,6 +71,22 @@ public class MainActivity extends AppCompatActivity {
                 requestNewInterstitial();
                 beginSecondActivity();
             }
+
+            @Override
+            public void onAdLoaded() {
+                // Ad received, ready to display
+                // [START_EXCLUDE]
+                if (mLoadInterstitialButton != null) {
+                    mLoadInterstitialButton.setEnabled(true);
+                }
+                // [END_EXCLUDE]
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                // See https://goo.gl/sCZj0H for possible error codes.
+                Log.w(TAG, "onAdFailedToLoad:" + i);
+            }
         });
         // [END create_interstitial_ad_listener]
 
@@ -85,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // [END display_interstitial_ad]
+
+        // Disable button if an interstitial ad is not loaded yet.
+        mLoadInterstitialButton.setEnabled(mInterstitialAd.isLoaded());
     }
 
     /**
